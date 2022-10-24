@@ -1,5 +1,5 @@
 # Excellent Ergonomics
-## A Reinforcment Learning Approach to Typing
+## A Reinforcement Learning Approach to Typing
 
 Excellent Ergonomics is a demonstration of reinforcement
 learning optimization. The learning agent, upon learning
@@ -13,3 +13,25 @@ keymap throughout all of its learning and give that to the user.
 This keymap will differ depending on what typing passages are 
 given to the agent.
 
+## Second 3-Slide Report
+
+This is the list of requirements for the second part of the project
+report:
+
+#### Slide 1:
+
+Sequential Decision Problem:
+
+-> Given: 
+
+-> Determine:
+
+-> Such that: reward
+
+#### Slide 2:
+
+The reinforcement algorithm and math
+
+#### Slide 3:
+
+Give a demo of your agent
