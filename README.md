@@ -22,11 +22,11 @@ report:
 
 Sequential Decision Problem:
 
--> Given: 
+-> Given: a segment of text
 
--> Determine:
+-> Determine: an optimized keymap
 
--> Such that: reward
+-> Such that: the amount of finger movement is minimized and stress placed on weaker fingers reduced
 
 #### Slide 2:
 
