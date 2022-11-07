@@ -62,3 +62,5 @@ preparation for beginning my project, and we'll just figure that one out.
 
 [Here](https://dl.acm.org/doi/10.1145/3163080.3163117) is a paper on typing with reinforcement
 learning that I may be able to utilize.
+
+Note: would it be more practical to just use a Q-learning table for the learning mechanism?
