@@ -1,6 +1,8 @@
 from typing import Optional
 
 import numpy as np
+from os import listdir
+import random
 
 import gym
 from gym import spaces
@@ -15,8 +17,9 @@ SCORES = [                                         [0.85, 0.95],
 KEYS = "abcdefghijklmnopqrstuvwxyz-=[]\\;',./"
 
 
-# The file from which text will be drawn
-FILE = "./frankenstein.txt"
+# The files from which text will be drawn
+files = [f for f in listdir("./texts")]
+random.shuffle(files)
 
 
 # borrowed from https://stackoverflow.com/a/49752733
@@ -38,7 +41,7 @@ def type_through_keymap(keymap, text, reward):
         if c in KEYS:
             index = (0, 0)
             for i in range(len(keymap)):
-                for j in range(i):
+                for j in range(len(keymap[i])):
                     if keymap[i][j] == c:
                         index = (i, j)
                         break
@@ -55,7 +58,7 @@ class KeyboardEnv(gym.Env):
         "render_fps": 4,
     }
 
-    def __init__(self, render_mode: Optional[str] = None, fname: Optional[str] = FILE):
+    def __init__(self, render_mode: Optional[str] = None, fname: Optional[str] = None):
         self.action_space = spaces.Tuple((
             spaces.Box(low=ord('\''), high=ord('z'), shape=(2,), dtype=np.uint),
             spaces.Box(low=ord('\''), high=ord('z'), shape=(13,), dtype=np.uint),
@@ -63,45 +66,45 @@ class KeyboardEnv(gym.Env):
             spaces.Box(low=ord('\''), high=ord('z'), shape=(10,), dtype=np.uint)
              ))
 
-        # all 26 letters, plus 10 punctuation keys on the right side
+        # all 26 letters, plus 10 punctuation keys on the right side self.observation_space = spaces.Dict(
         self.observation_space = spaces.Dict(
-            {
-                    'a': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'b': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'c': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'd': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'e': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'f': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'g': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'h': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'i': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'j': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'k': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'l': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'm': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'n': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'o': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'p': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'q': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'r': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    's': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    't': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'u': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'v': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'w': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'x': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'y': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    'z': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    '-': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    '=': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    '[': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    ']': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    '\\': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    ';': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    '\'': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    ',': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    '.': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float),
-                    '/': spaces.Box(low=0, high=np.inf, shape=(1,), dtype=np.float)
+                {
+                    'a': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'b': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'c': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'd': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'e': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'f': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'g': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'h': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'i': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'j': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'k': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'l': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'm': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'n': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'o': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'p': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'q': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'r': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    's': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    't': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'u': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'v': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'w': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'x': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'y': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    'z': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    '-': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    '=': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    '[': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    ']': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    '\\': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    ';': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    '\'': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    ',': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    '.': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint),
+                    '/': spaces.Box(low=0, high=len(KEYS), shape=(1,), dtype=np.uint)
                 }
             )
 
@@ -111,8 +114,8 @@ class KeyboardEnv(gym.Env):
             ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/']
         ]
 
-        self.textgen = generate_text(open(fname))
         self.render_mode = render_mode
+        self.fname = fname
 
     def step(self, action):
         self.keymap = action
@@ -128,6 +131,11 @@ class KeyboardEnv(gym.Env):
         obs = type_through_keymap(self.keymap, text, self.keyscores)
 
         reward = sum(obs.values())
+        count = 0
+        for i in range(len(self.keymap)):
+            for j in range(len(self.keymap[i])):
+                obs[self.keymap[i][j]] = count
+                count += 1
 
         if self.render_mode == "human":
             self.render()
@@ -140,52 +148,64 @@ class KeyboardEnv(gym.Env):
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed)
+
+        fname = self.fname
+        if self.fname is None:
+            fname = "./texts/" + files[0]
+            files.pop(0)
+
+        self.textgen = generate_text(open(fname))
         self.keyscores = self._reset_scores()
 
         text = next(self.textgen)
 
         obs = type_through_keymap(self.keymap, text, self.keyscores)
+        count = 0
+        for i in range(len(self.keymap)):
+            for j in range(len(self.keymap[i])):
+                obs[self.keymap[i][j]] = count
+                count += 1
 
         return obs, {}
 
     def _reset_scores(self):
         return {
-            'a': 0.0,
-            'b': 0.0,
-            'c': 0.0,
-            'd': 0.0,
-            'e': 0.0,
-            'f': 0.0,
-            'g': 0.0,
-            'h': 0.0,
-            'i': 0.0,
-            'j': 0.0,
-            'k': 0.0,
-            'l': 0.0,
-            'm': 0.0,
-            'n': 0.0,
-            'o': 0.0,
-            'p': 0.0,
-            'q': 0.0,
-            'r': 0.0,
-            's': 0.0,
-            't': 0.0,
-            'u': 0.0,
-            'v': 0.0,
-            'w': 0.0,
-            'x': 0.0,
-            'y': 0.0,
-            'z': 0.0,
-            '-': 0.0,
-            '=': 0.0,
-            '[': 0.0,
-            ']': 0.0,
-            '\\': 0.0,
-            ';': 0.0,
-            '\'': 0.0,
-            ',': 0.0,
-            '.': 0.0,
-            '/': 0.0,
+            'a': 0,
+            'b': 0,
+            'c': 0,
+            'd': 0,
+            'e': 0,
+            'f': 0,
+            'g': 0,
+            'h': 0,
+            'i': 0,
+            'j': 0,
+            'k': 0,
+            'l': 0,
+            'm': 0,
+            'n': 0,
+            'o': 0,
+            'p': 0,
+            'q': 0,
+            'r': 0,
+            's': 0,
+            't': 0,
+            'u': 0,
+            'v': 0,
+            'w': 0,
+            'x': 0,
+            'y': 0,
+            'z': 0,
+            '-': 0,
+            '=': 0,
+            '[': 0,
+            ']': 0,
+            '\\': 0,
+            ';': 0,
+            '\'': 0,
+            ',': 0,
+            '.': 0,
+            '/': 0,
         }
 
     def render(self):
