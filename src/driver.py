@@ -1,6 +1,7 @@
 from keyboardEnv import KeyboardEnv as kEnv
 from agent import KeyboardAgent as Agent
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 """
@@ -48,6 +49,7 @@ if __name__ == "__main__":
     
     agent = Agent(env)
     episode_count = 0
+    learning = []
 
     for iteration in range(1, MAX_ITERATIONS+1):
         episode_count += 1
@@ -61,11 +63,23 @@ if __name__ == "__main__":
             steps += 1
             action = agent.act(state)
 
-            state, reward, done, *_ = env.step(action)
-            agent.update(state, reward)
+            next_state, reward, done, *_ = env.step(action)
+            agent.update(state, next_state, reward)
+            state = next_state
             total_reward += reward
 
             agent.update_randomness()
 
+        learning.append(total_reward/steps)
+
         print(f"Iteration: {iteration} | Average reward: {(total_reward/steps):.4f}")
+
+    x = np.arange(1, len(learning) + 1)
+    y = learning
+
+    plt.plot(x, y)
+    plt.title("Average steps per 5000 characters")
+    plt.xlabel("Iteration")
+    plt.ylabel("Average Steps")
+    plt.show()
 

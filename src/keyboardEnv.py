@@ -23,7 +23,7 @@ random.shuffle(files)
 
 
 # borrowed from https://stackoverflow.com/a/49752733
-def generate_text(handle, size=10000):
+def generate_text(handle, size=5000):
     block = []
     for line in handle:
         for c in line:

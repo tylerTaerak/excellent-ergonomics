@@ -113,17 +113,35 @@ class KeyboardAgent:
 
         return keymap
 
-    def update(self, state, reward):
+    def update(self, state, next_state, reward):
         reward_adj = reward * 0.0001 # weight rewards to ensure good learning
         
         for i in self.qTable.keys():
             if state[i] in self.qTable[i]:
-                self.qTable[i][state[i]] += reward_adj
+                comparator = self.qTable[i][state[i]]
             else:
-                self.qTable[i][state[i]] = reward_adj
+                comparator = 0
+
+            if next_state[i] in self.qTable[i]:
+                qVal = min(self.qTable[i].items(), key=lambda x:x[1])
+                if qVal != np.inf:
+                    target = reward + qVal[1]
+                else:
+                    target = reward
+            else:
+                target = reward
+            
+            self.qTable[i][state[i]] = comparator + (target - comparator) * 3e-5
 
     def update_randomness(self):
         self.randomness *= self.decay
+
+    def getQ(self, state):
+        q = {}
+        for i in state.keys():
+            q[i] = self.qTable[i][state[i]]
+
+        return q
 
 
     """
