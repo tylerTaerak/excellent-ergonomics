@@ -44,6 +44,8 @@ print(f'Reward for Alphabetical: {reward}')
 if __name__ == "__main__":
     MAX_ITERATIONS = 25
     LOG_ITERATION = 5
+
+    total_count = 0
     
     env = kEnv()
     
@@ -60,26 +62,28 @@ if __name__ == "__main__":
         total_reward = 0
         steps = 0
         while not done:
+            total_count += 1
             steps += 1
             action = agent.act(state)
 
             next_state, reward, done, *_ = env.step(action)
-            agent.update(state, next_state, reward)
+            agent.update(state, next_state, action, reward)
             state = next_state
             total_reward += reward
 
-            agent.update_randomness()
 
+        agent.update_randomness()
         learning.append(total_reward/steps)
 
         print(f"Iteration: {iteration} | Average reward: {(total_reward/steps):.4f}")
+
 
     x = np.arange(1, len(learning) + 1)
     y = learning
 
     plt.plot(x, y)
-    plt.title("Average steps per 5000 characters")
+    plt.title("Average Score per 2000 characters")
     plt.xlabel("Iteration")
-    plt.ylabel("Average Steps")
+    plt.ylabel("Average Score")
     plt.show()
 

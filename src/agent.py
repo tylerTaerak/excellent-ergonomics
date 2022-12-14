@@ -31,6 +31,10 @@ class KeyboardAgent:
         self.model = KeyboardNN(environment.observation_space.shape[0], environment.action_space.n).to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=3e-3)
         """
+
+# keymaps will be dynamically added to both state and action qTable entries
+        self.qTable = np.zeros(shape=(10000, 10000))
+        """
         self.qTable = {
                 'a': {x: np.inf for x in range(len(keys))},
                 'b': {x: np.inf for x in range(len(keys))},
@@ -69,21 +73,53 @@ class KeyboardAgent:
                 '.': {x: np.inf for x in range(len(keys))},
                 '/': {x: np.inf for x in range(len(keys))},
                 }
+        """
+
+        self.state_visited = {}
+        self.state_count = 0
+        self.act_visited = {}
+        self.act_count = 0
+
         self.randomness = 1.0 # chance to act randomly
-        self.decay = 0.75 # decay to multiply randomness by
+        self.decay = 0.8 # decay to multiply randomness by
 
     def act(self, state):
         if random.random() < self.randomness:
             keylist = list(keys)
             random.shuffle(keylist)
-            toReturn = self.generate_keymap(keylist)
-            return toReturn #self.generate_keymap(keylist)    # generate random keymap
+            toReturn = self.generate_keymap(keylist) # generate random keymap
+            return toReturn
 
         toReturn = self.act_greedy(state)
         return toReturn # self.act_greedy(state)
 
     # act_greedy will never be the first action called, so we don't need to worry about an empty dictionary
     def act_greedy(self, state):
+        if state not in self.state_visited.values():
+            self.state_visited[self.state_count] = state
+            state_count += 1
+
+        indices, states = zip(*self.state_visited.items())
+        state_index = states.index(state)
+
+        state = indices[state_index]
+
+
+
+        # from https://stackoverflow.com/a/45002906
+        i,j = np.where( self.qTable==np.min(self.qTable[np.nonzero(self.qTable)]))
+
+        keymap = self.act_visited[i[0]]
+
+        toReturn = []
+
+        for i in range(len(keymap)):
+            for j in range(len(keymap[i])):
+                toReturn.append(keymap[i][j])
+
+        return self.generate_keymap(toReturn)
+
+        """
         order = [-1 for i in range(len(keys))]
         keymap = list(self.qTable.keys());
         random.shuffle(keymap);
@@ -100,6 +136,7 @@ class KeyboardAgent:
             order[j] = i
 
         return self.generate_keymap(order)
+        """
 
     def generate_keymap(self, order):
         keymap = [                                  [0, 0],
@@ -113,9 +150,40 @@ class KeyboardAgent:
 
         return keymap
 
-    def update(self, state, next_state, reward):
-        reward_adj = reward * 0.0001 # weight rewards to ensure good learning
+    def update(self, state, next_state, action, reward):
+
+        # handle indexing of newly visited states/actions
+        if state not in self.state_visited.values():
+            self.state_visited[self.state_count] = state
+            self.state_count += 1
+
+        if next_state not in self.state_visited.values():
+            self.state_visited[self.state_count] = next_state
+            self.state_count += 1
         
+        if action not in self.act_visited.values():
+            self.act_visited[self.act_count] = action
+            self.act_count += 1
+
+# FIX THIS - BACKWARDS
+
+        indices, states = zip(*self.state_visited.items())
+        state_index = states.index(state)
+        ns_index = states.index(next_state)
+
+        state = indices[state_index]
+
+        next_state = indices[ns_index]
+
+        indices, actions = zip(*self.act_visited.items())
+        action_index = actions.index(action)
+
+        action = indices[action_index]
+
+        target = reward + np.max(self.qTable[next_state])
+        self.qTable[(state,) + (action,)] += (target - self.qTable[(state,) + (action,)]) * .0001
+
+        """
         for i in self.qTable.keys():
             if state[i] in self.qTable[i]:
                 comparator = self.qTable[i][state[i]]
@@ -132,6 +200,7 @@ class KeyboardAgent:
                 target = reward
             
             self.qTable[i][state[i]] = comparator + (target - comparator) * 3e-5
+        """
 
     def update_randomness(self):
         self.randomness *= self.decay

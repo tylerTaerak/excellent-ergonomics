@@ -8,10 +8,10 @@ import gym
 from gym import spaces
 
 
-SCORES = [                                         [0.85, 0.95],
-[0.5, 0.25, 0.25, 0.1, 0.12, 0.12, 0.1, 0.25, 0.3, 0.5, 0.7, 0.8, 0.9],
-  [0.1, 0.075, 0.01, 0.0, 0.05, 0.05, 0.0, 0.01, 0.075, 0.1, 0.2],
-    [0.6, 0.4, 0.3, 0.2, 0.25, 0.2, 0.3, 0.4, 0.6, 0.8]
+SCORES = [                                         [6.5, 9.0],
+[4.5, 2.1, 1.8, 3.0, 4.0, 7.0, 4.5, 3.0, 1.8, 2.1, 4.5, 5.0, 7.0],
+  [1.5, 1.1, 0.8, 1.0, 3.0, 6.5, 3.0, 1.0, 0.8, 1.1, 1.5],
+    [4.0, 4.0, 2.5, 2.0, 5.0, 5.0, 2.0, 2.5, 4.0, 4.0]
 ]
 
 KEYS = "abcdefghijklmnopqrstuvwxyz-=[]\\;',./"
@@ -23,7 +23,7 @@ random.shuffle(files)
 
 
 # borrowed from https://stackoverflow.com/a/49752733
-def generate_text(handle, size=5000):
+def generate_text(handle, size=2000):
     block = []
     for line in handle:
         for c in line:
