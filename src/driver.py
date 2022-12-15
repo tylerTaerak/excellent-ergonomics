@@ -78,6 +78,8 @@ if __name__ == "__main__":
         print(f"Iteration: {iteration} | Average reward: {(total_reward/steps):.4f}")
 
 
+    print(agent.get_best())
+
     x = np.arange(1, len(learning) + 1)
     y = learning
 
