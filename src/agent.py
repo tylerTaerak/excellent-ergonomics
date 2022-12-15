@@ -26,18 +26,11 @@ class KeyboardAgent:
 
     def act_random(self, state):
         if self.state_count >= 1000:
-            indices, states = zip(*self.state_visited.items())
-            state_index = states.index(state)
-
-            state = indices[state_index]
-
-            keymap = state
-            while keymap == state:
-                keymap = random.randrange(1000)
+            keymap = random.randrange(1000)
 
             keymap = self.state_visited[keymap]
 
-            toReturn = ['' for i in range(36)]
+            toReturn = ['' for _ in range(36)]
 
             for i in keymap.keys():
                 toReturn[keymap[i]] = i
